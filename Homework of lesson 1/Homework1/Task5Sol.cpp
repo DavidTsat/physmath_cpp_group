@@ -1,7 +1,6 @@
 #include <string>
-using std::string;
 
-unsigned binary_string_to_int(string s)
+unsigned binary_string_to_int(std::string s)
 {
 	unsigned x = 0;
 	for (char c : s) {
