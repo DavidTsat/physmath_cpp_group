@@ -1,0 +1,176 @@
+Задача 9.
+Дан массив положительных целых чисел arr. Дан еще массив от массивов от двух элементов xor_indices, в котором каждый 
+элемент xor_indices[i][0] и xor_indices[i][1] представляют собой индексы. Требуется посчитать xor всех элементов, входящих 
+в диапазон [xor_indices[i][0], xor_indices[i][1]]. (если xor_indices[i][0] == xor_indices[i][1], то возвращается только значение
+arr[xor_indices[i][0]], а не 0).
+Важно найти оптимальное, линейное решение, а не просто писать цикл от xor_indices[i][0] до xor_indices[i][1] и считать xor всех элементов)
+
+Пример 1.
+Вход: arr = [1,3,4,8], xor_indices = [[0,1],[1,2],[0,3],[3,3]]
+Выход: [2,7,14,8] 
+Объяснение: 
+Двоичное представление элементов:
+1 = 0001 
+3 = 0011 
+4 = 0100 
+8 = 1000 
+результат:
+[0,1] = 1 xor 3 = 2 
+[1,2] = 3 xor 4 = 7 
+[0,3] = 1 xor 3 xor 4 xor 8 = 14 
+[3,3] = 8
+
+Пример 2.
+Вход: arr = [4,8,2,10], xor_indices = [[2,3],[1,3],[0,0],[0,3]]
+Выход: [8,0,4,4]
+
+// 1 lucumy karelia segment tree ov anel
+// amen harcumy log(N) um kanenq
+
+// 2rd lucumy prefix array ov
+
+vector<int> xor_subarrays(vector<int>& arr, vector<vector<int>>& xor_indices)
+{
+  int n = (int)arr.size();
+  vector<int> prefix(n + 1);
+
+  for(int i = 1; i <= n; i++) {
+    prefix[i] = prefix[i - 1] ^ arr[i - 1];
+  }
+
+  vector<int> answ;
+  for(int i = 0; i < xor_indices.size(); i++) {
+    int l = xor_indices[i].front(), r = xor_indices[i].back() + 1;
+    answ.push_back(prefix[r] ^ prefix[l]);
+  }
+  return answ;
+}
+
+Задача 10.
+Дан массив, в котором есть все неотрицательные целые числа диапазона [0, a.size()], кроме одного. Требуется за линейное время найти отсутствующее число.
+Пример 1.
+Вход: {3,0,1}
+Выход: 2
+
+Пример 2.
+Вход: {0,1}
+Выход: 2
+
+Пример 3.
+Вход: {9,6,4,2,3,5,7,0,1}
+Выход: 8
+
+// first solution
+int missing_number(vector<int>& nums) 
+{
+	int s = 0, n = nums.size();
+	long long all = 1ll * n * (n + 1) / 2;
+	for(int i = 0; i < n; i++) {
+		s += nums[i];
+	}
+	
+	return (all - s);
+}
+
+// second solution
+
+int missing_number(vector<int>& nums) 
+{
+	int n = nums.size();
+	vector<int> used(n + 1);
+	
+	for(int i = 0; i < n; i++) {
+		used[nums[i]] = true;
+	}
+	
+	for(int i = 0; i <= n; i++) {
+		if(!used[i]) {
+			return i;
+		}
+ 	}
+	
+	//
+	
+8 2 12
+1 2 4 2 1 3 5 6 2 3 6 4
+	return -1;
+}
+
+Задача 11.
+Дан массив неотрицательных целых чисел. Для каждого (непрерывного) подмассива sub_array = {arr[i], arr[i + 1], ..., arr[j]} (где i <= j) 
+мы выполняем побитовое ИЛИ всех элементов в sub_array: {arr[i] | arr[i + 1] | ... | arr[j]}. Возвращать количество возможных результатов. 
+Результаты, встречающиеся более одного раза, учитываются только один раз в окончательном ответе.
+
+Пример 1.
+Вход: arr = {0}
+Выход: 1
+Объяснение: There is only one possible result: 0.
+
+Пример 2.
+Вход: arr = {1,1,2}
+Выход: 3
+Объяснение: 
+Всевозможные подмножества входного массива: {1}, {1}, {2}, {1, 1}, {1, 2}, {1, 1, 2}.
+OR этих подмножеств: 1, 1, 2, 1, 3, 3.
+Где только 3 различных значения, т.е. ответ: 3
+
+Пример 3.
+Вход: {1,2,4}
+Выход: 6
+Объяснение: 
+Возможные результаты: 1, 2, 3, 4, 6 и 7.
+int subarray_bitwise_ORs(vector<int>& arr)
+{
+  int n = (int)arr.size();
+  set<int> possibleOr, suff;
+  for(int i = 0; i < n; i++) {
+    set<int> curr;
+    for(auto j: suff) {
+      possibleOr.insert(j | arr[i]);
+      curr.insert(j | arr[i]);
+    }
+
+    curr.insert(arr[i]);
+    possibleOr.insert(arr[i]);
+
+    suff.swap(curr);
+  }
+
+  return (int)possibleOr.size();
+}
+
+Задача 12.
+Дан массив неотрицательных целых чисел, требуется найти arr[i] ^ arr[j] двух элементов, так что значение arr[i] ^ arr[j] максимальное среди всех пар arr[i] и arr[j].
+
+Пример 1.
+Вход: {3,10,5,25,2,8}
+Выход: 28
+Объяснение: Максимальный результат есть 5^25 == 28
+
+Пример 2.
+Вход: {14,70,53,83,49,91,36,80,92,51,66,70}
+Выход: 127
+
+int maximum_xor_pair(vector<int> arr)
+{
+  // a ^ b = c | a ^ c = b;
+
+  int answ = 0;
+  for(int i = sizeof(int) * 8 - 2; i >= 0; i--) {
+
+    int maxi = answ | (1 << i);
+
+    set<int> st;
+    for(auto j: arr) {
+      st.insert(maxi & j);
+    }
+
+    for(auto j: st) {
+      if(st.find(j ^ maxi) != st.end()) {
+        answ |= (1 << i);
+      }
+    }
+  }
+
+  return answ;
+}
