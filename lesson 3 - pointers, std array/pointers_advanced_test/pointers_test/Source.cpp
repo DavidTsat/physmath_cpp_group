@@ -51,22 +51,6 @@ void third_example()
 	cout << *(p - 1) << endl;
 }
 
-void forth_example()
-{
-	const char* c[] = { "ABCD", "EF", "GHI", "JKLMN" };
-	const char** cp[] = { c + 3, c + 2, c + 1, c }; 
-	const char*** cpp = cp;
-
-	cout << sizeof(c) << endl;  
-	cout << *cp[1] << endl;		
-	cout << **++cpp << endl;	
-	cout << ***cpp << endl;		
-
-	cout << *(--(* ++cpp)) + 3 << endl; 
-	cout << (*cpp[-2] + 3) << endl; 
-
-	cout << (cpp[-1][-1] + 1) << endl; 
-}
 
 // fifth example
 void f5(char** str_ref)
@@ -172,7 +156,6 @@ int main()
 	//first_question();
 	//second_question();
 	//third_example();
-	//forth_example();
 	//fifth_example();
 	//sixth_example();
 	//seventh_example();
