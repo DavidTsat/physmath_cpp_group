@@ -70,8 +70,8 @@ public:
 		// TODO
 	}
 
-	template <typename T>
-	mat<T> mat_mul(const mat<T>&, const mat<T>&);
+	template <typename F>
+	mat<F> mat_mul(const mat<F>&, const mat<F>&);
 
 	template <typename F>
 	friend ostream& operator<<(ostream&, const mat<F>&);
@@ -113,8 +113,8 @@ void swap_(mat<F>&, mat<F>&)
 	// TODO
 }
 
-template <typename T>
-mat<T> mat_mul(const mat<T>&, const mat<T>&)
+template <typename F>
+mat<F> mat_mul(const mat<F>&, const mat<F>&)
 {
 	// TODO
 }
