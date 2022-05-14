@@ -8,8 +8,8 @@ using namespace std;
 template <typename T>
 class mat
 {
-	const size_t M;
-	const size_t N;
+	size_t M;
+	size_t N;
 
 	T** v;
 public:
