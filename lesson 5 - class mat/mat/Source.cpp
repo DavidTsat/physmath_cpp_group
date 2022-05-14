@@ -12,14 +12,16 @@ void spiral_order_tests()
 {
 	vector<vector<int>> v1 = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
 	vector<vector<int>> v2 = { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12} };
+	vector<vector<int>> v3 = { {1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}, {11, 12, 13, 14, 15}, {16, 17, 18, 19, 20}, {21, 22, 23, 24, 25} };
 
 	vector<int> v1_answ = { 1, 2, 3, 6, 9, 8, 7, 4, 5 };
 	vector<int> v2_answ = { 1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7 };
+	vector<int> v3_answ = { 1,2,3,4,5,10,15,20,25,24,23,22,21,16,11,6,7,8,9,14,19,18,17,12,13 };
 
-	vector<vector<vector<int>>> inputs = { v1, v2 };
-	vector<vector<int>> outputs = { v1_answ, v2_answ };
+	vector<vector<vector<int>>> inputs = { v1, v2, v3 };
+	vector<vector<int>> outputs = { v1_answ, v2_answ, v3_answ };
 
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		mat<int> m(inputs[i]);
 		vector<int> answ = m.spiral_order();
