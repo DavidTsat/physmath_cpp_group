@@ -81,6 +81,7 @@ void max_square_tests()
 	vector<vector<vector<char>>> inputs = { m1, m2, m3, m4, m5, m6 };
 	vector<int> outputs = { 4, 16, 4, 64, 25, 9 };
 
+
 	for (int i = 0; i < 6; ++i)
 	{
 		mat<char> m(inputs[i]);
@@ -164,7 +165,7 @@ void run_tests()
 	num_islands_tests();
 	cout << endl << "running mat_mul_tests" << endl;
 	mat_mul_tests();
-
+}
 
 int main()
 {
