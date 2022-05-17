@@ -113,14 +113,8 @@ public:
 		}
 	}
 
-	template <typename T>
-	friend ostream& operator<<(ostream& os, const mat<T>& m)
-	{
-		for_each_n(v, N, [](const T* ptr) {
-			for_each_n(ptr, N, [](const T& elem) { cout << elem << ' '; });
-			cout << '\n';
-			});
-	}
+	template <typename F>
+	friend ostream& operator<<(ostream& os, const mat<F>& m);
 };
 
 template <typename T>
@@ -140,4 +134,14 @@ mat<T> generate_spiral_mat(int n)
 		y += dy[i];
 	}
 	return mt;
+}
+
+template <typename F>
+ostream& operator<<(ostream& os, const mat<F>& m)
+{
+	for_each_n(m.v, m.M, [&m, &os](const F* ptr) {
+		for_each_n(ptr, m.N, [&os](const F& elem) { os << elem << ' '; });
+		os << '\n';
+		});
+	return os;
 }
