@@ -79,21 +79,19 @@ public:
 			cnt = 0; x = inside; y = inside; ind = 0;
 			while (++cnt <= layercnt) {
 				ans.push_back(v[x][y]);
-				if (x + dx[ind] > mxinsideM || x + dx[ind] < 0 || \
-					y + dy[ind] > mxinsideN || y + dy[ind] < 0)
+				if (x + dx[ind] > mxinsideM || x + dx[ind] < inside || \
+					y + dy[ind] > mxinsideN || y + dy[ind] < inside)
 					if (++ind > 3)
 						ind = 0;
 				x += dx[ind];
 				y += dy[ind];
 			}
-			++inside; --mxinsideM; --mxinsideN;
-			if (N == M && mxinsideM - inside == 3)
+			if (N == M && mxinsideM - inside == 2)
 				layercnt = 1;
 			else
 				layercnt -= 8;
+			++inside; --mxinsideM; --mxinsideN;
 		}
-		if (N == 3 && M == 3)
-			ans.push_back(v[1][1]);
 		return ans;
 	}
 
