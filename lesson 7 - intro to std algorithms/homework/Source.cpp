@@ -133,7 +133,6 @@ void test_sort(function<void(vector<int>::iterator, vector<int>::iterator)> my_s
 	}
 }
 
-
 bool next_permutation_(/*TODO*/)
 {
 	// TODO
