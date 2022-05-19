@@ -9,7 +9,26 @@
 
 using namespace std;
 
+// TODO
+constexpr SourceIt search_(/*TODO*/)
+{
+	// TODO
+}
 
+
+bool contains(const string& str, const string& s)
+{
+	return search_(str.cbegin(), str.cend(), s.cbegin(), s.cend()) != str.cend();
+}
+
+
+void test_search_()
+{
+	string str = "why waste time learning, when ignorance is instantaneous?";
+	// str.find() can be used as well
+	cout << boolalpha << contains(str, "learning") << endl;   // true
+	//	<< contains(str, "lemming") << '\n';  // false
+}
 void upper_bound_(/*TODO*/) // implement or copy/paste upper_bound_from previous class's implementation if you are sure you know the implementation
 {
 	// TODO
@@ -205,11 +224,10 @@ void permutation_tests()
 
 int main()
 {
+	//	test_search_();
 	//	square_sort_tests();
-
 	//	test_sort([](vector<int>::iterator begin, vector<int>::iterator end) {merge_sort_(begin, end); });
 	//	test_sort([](vector<int>::iterator begin, vector<int>::iterator end) {insertion_sort_(begin, end); });
-
 	//	permutation_tests();
 	return 0;
 }
