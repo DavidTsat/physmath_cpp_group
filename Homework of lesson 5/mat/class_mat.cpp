@@ -14,6 +14,16 @@ class mat
 	T** v = nullptr;
 
 	constexpr static short dx[]{ 0, 1, 0, -1 }, dy[]{ 1, 0, -1, 0 };
+
+	void dfs(size_t x, size_t y)
+	{
+		v[x][y] = '0';
+		for (size_t ind = 0; ind < 4; ++ind)
+			if (x + dx[ind] < M && x + dx[ind] >= 0 && \
+				y + dy[ind] < N && y + dy[ind] >= 0 && \
+				v[x + dx[ind]][y + dy[ind]] == '1')
+				dfs(x + dx[ind], y + dy[ind]);
+	}
 public:
 
 	mat(const vector<vector<T>>& v2) : M(v2.size()), N(v2[0].size()), v(new T* [M])
@@ -166,7 +176,7 @@ public:
 							}
 						if (!go)
 							break;
-						for (k = j + layer - 2; k >= j; --k)
+						for (k = (j + layer >= 2 ? 0 : j + layer - 2); k >= j; --k)
 							if (v[i + layer - 1][k] != '1') {
 								go = false;
 								break;
@@ -180,8 +190,32 @@ public:
 		return ans * ans;
 	}
 
+	int max_square_dp() const
+	{
+		if (!is_same<T, char>::value)
+			throw logic_error("incorrect type! ");
+		size_t ans = 0;
+		mat<size_t> dp(M, N);
+		for (size_t i = 0; i < M; ++i)
+			for (size_t j = 0; j < N; ++j) {
+				if (v[i][j] != '1')
+					continue;
+				if (!i || !j)
+					dp[i][j] = 1;
+				else {
+					dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]);
+					if (i >= dp[i][j] && j >= dp[i][j] && v[i - dp[i][j]][j - dp[i][j]] == '1')
+						++dp[i][j];
+				}
+				ans = max(ans, dp[i][j]);
+			}
+		return ans * ans;
+	}
+
 	int num_islands()
 	{
+		if (!is_same<T, char>::value)
+			throw logic_error("incorrect type! ");
 		size_t x, y;
 		int ans = 0;
 		queue<pair<size_t, size_t>> q;
@@ -205,6 +239,21 @@ public:
 								q.push(make_pair(x + dx[ind], y + dy[ind]));
 							}
 					}
+				}
+		return ans;
+	}
+
+	int num_islands_recur()
+	{
+		if (!is_same<T, char>::value)
+			throw logic_error("incorrect type! ");
+		size_t x, y;
+		int ans = 0;
+		for (size_t i = 0; i < M; ++i)
+			for (size_t j = 0; j < N; ++j)
+				if (v[i][j] == '1') {
+					dfs(i, j);
+					++ans;
 				}
 		return ans;
 	}
