@@ -223,3 +223,44 @@ void vec_test10() // tests with std::vector conversions
 	cout << boolalpha;
 	cout << (v1 == (vector<int>)v) << endl;
 }
+
+void vec_test11()
+{
+	vec<vec<int>> v;
+	vector<vector<int>> v2;
+
+	for (int i = 0; i < 5; ++i)
+	{
+		vector<int> r = generate_random_vector(1001);
+		v.push_back(r);
+		v2.push_back(r);
+	}
+
+	cout << boolalpha;
+	
+	for (int i = 0; i < 5; ++i)
+	{
+		cout << equal(v[i].cbegin(), v[i].cend(), v2[i].cbegin(), v2[i].cend()) << endl;
+	}
+}
+
+void vec_tests12()
+{
+	vector<vector<int>> v = { {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 1}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0} };
+
+	vec<vec<int>> vc;
+	vc.reserve(v.size());
+	for (int i = 0; i < v.size(); ++i)
+	{
+		vc.push_back(v[i]);
+	}
+
+	cout << boolalpha;
+
+	bool b = true;
+	for (int i = 0; i < v.size(); ++i)
+	{
+		b &= equal(v[i].cbegin(), v[i].cend(), vc[i].cbegin(), vc[i].cend());
+	}
+	cout << b << endl;
+}

@@ -11,22 +11,22 @@ template <typename T>
 class vec
 {
 public:
-	using value_type		= T;
-	using size_type			= size_t;
-	using reference			= value_type&;
-	using const_reference	= const value_type&;
-
-	// TODO - to implement the following methods
-	vec();
+	using value_type = T;
+	using size_type = size_t;
+	using reference = value_type&;
+	using const_reference = const value_type&;
+	
+	// TODO
+	vec()
 	explicit vec(size_type);
 	vec(size_type, const value_type&);
-	vec(const vec&);
-	vec(vec&& v2) noexcept;
-	vec(const std::vector<T>&);
-	explicit operator std::vector<T>() const;
+	vec(const vec<value_type>&);
+	vec(const vec<value_type>&&);
+	vec(const std::vector<value_type>&);
+	explicit operator std::vector<value_type>() const;
 	~vec() noexcept;
-	vec& operator=(const vec&);
-	vec& operator=(vec&&) noexcept;
+	vec<value_type>& operator=(const vec<value_type>&);
+	vec<value_type>& operator=(vec<value_type>&&) noexcept;
 	template <typename Q>
 	friend void swap_(vec<Q>&, vec<Q>&);
 	void resize(size_type);
@@ -36,10 +36,10 @@ public:
 	void push_back(const value_type&);
 	void pop_back();
 	reference operator[](size_type);
-	const_reference operator[](size_type) const;
+	const_reference operator[](size_type);
 	value_type* cbegin();
 	value_type* cend();
-
+	bool empty() const;
 	// emplace, etc.
 private:
 	value_type* data;
@@ -52,7 +52,7 @@ private:
 template <typename Q>
 void swap_(vec<Q>& v1, vec<Q>& v2)
 {
-// TODO
+	// TODO
 }
 
 template <typename T>
@@ -60,3 +60,17 @@ bool operator==(vec<T>& v1, vec<T>& v2)
 {
 	return v1.size() == v2.size() && v1.capacity() == v2.capacity() && equal(v1.cbegin(), v1.cend(), v2.cbegin(), v2.cend());
 }
+
+/*
+	Algorithmic Problems
+*/
+
+struct sol_unique_paths_with_obstacles
+{
+	int unique_paths_with_obstacles(vec<vec<int>>& grid)
+	{
+		// TODO
+		// don't use std::vectors inside, only vec
+		return 0;
+	}
+};

@@ -26,5 +26,8 @@
     <ClInclude Include="vec_tests.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vec_problems_tests.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
