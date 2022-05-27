@@ -22,21 +22,21 @@ public:
 	vec(size_type, const value_type&);
 	vec(const vec&);
 	vec(vec&& v2) noexcept;
-	vec(const std::vector<T>& v);
+	vec(const std::vector<T>&);
 	explicit operator std::vector<T>() const;
 	~vec() noexcept;
 	vec& operator=(const vec&);
 	vec& operator=(vec&&) noexcept;
 	template <typename Q>
 	friend void swap_(vec<Q>&, vec<Q>&);
-	void resize(size_t);
-	void reserve(size_t);
+	void resize(size_type);
+	void reserve(size_type);
 	size_type size() const;
 	size_type capacity() const;
 	void push_back(const value_type&);
 	void pop_back();
-	reference operator[](size_t);
-	const_reference operator[](size_t) const;
+	reference operator[](size_type);
+	const_reference operator[](size_type) const;
 	value_type* cbegin();
 	value_type* cend();
 
