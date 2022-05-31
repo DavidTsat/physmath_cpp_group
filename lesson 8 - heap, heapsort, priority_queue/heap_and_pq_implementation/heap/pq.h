@@ -48,11 +48,15 @@ class priority_queue_;
 template<typename T, typename Cmp = greater<T>>
 class max_priority_queue;
 
+template<typename T, typename Cmp = greater<T>>
+class min_priority_queue;
+
 template<typename T, typename Compare = greater<T>>
 class heap
 {
 	friend class priority_queue_<T, Compare>;
 	friend class max_priority_queue<T, Compare>;
+	friend class min_priority_queue<T, Compare>;
 
 	vector<T> data;
 	Compare cmp;
