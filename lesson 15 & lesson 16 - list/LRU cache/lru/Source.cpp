@@ -125,6 +125,8 @@ void test4()
     outputs.push_back(obj->get(1));
     outputs.push_back(obj->get(2));
 
+    delete obj;
+
     assert(answer == outputs);
     cout << "test4 passed\n";
     /*
@@ -149,6 +151,9 @@ void test5()
     obj->put(4, 1);
     outputs.push_back(obj->get(1));
     outputs.push_back(obj->get(2));
+
+    delete obj;
+
     assert(answer == outputs);
     cout << "test5 passed\n";
     /*
@@ -191,6 +196,8 @@ void test6()
     outputs.push_back(obj->get(9));
     outputs.push_back(obj->get(10));
     outputs.push_back(obj->get(10));
+
+    delete obj;
 
     assert(answer == outputs);
     cout << "test6 passed\n";
