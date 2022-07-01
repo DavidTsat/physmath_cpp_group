@@ -23,5 +23,8 @@
     <ClInclude Include="_list.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="list_problems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,3 +1,5 @@
+#pragma once 
+
 #include <iostream>
 #include <assert.h>
 #include <iterator>
@@ -29,6 +31,17 @@ private:
     node* head;
     node* tail;
 
+
+private:
+    void reverse_iterative()
+    {
+       // TODO
+    }
+
+    void reverse_recursive(node* p)
+    {
+        // TODO
+    }
 public:
     class iterator : public std::iterator<std::bidirectional_iterator_tag, value_type>
     {
@@ -221,6 +234,14 @@ public:
         }
     }
 
+    void reverse()
+    {
+        // TODO
+        // 
+        //reverse_iterative();
+        //reverse_recursive(head);
+    }
+
     void swap(_list& l1) noexcept
     {
         std::swap(l1.head, head);
@@ -231,6 +252,8 @@ public:
     size_type size() const {
         return size_;
     }
+
+    void deleteDuplicates();
 };
 
 void test1()
@@ -476,5 +499,53 @@ void test12()
     for (_list<int>::iterator it = l.begin(); it != l.end(); ++it)
     {
         cout << *it << ' ';
+    }
+}
+
+void test13()
+{
+    _list<int> l1;
+    _list<int> l2;
+    _list<int> l3(1);
+
+    for (int i = 0; i < 10; ++i)
+    {
+        l1.push_back(i);
+    }
+
+    l1.reverse();
+    l2.reverse();
+    l3.reverse();
+
+    for (_list<int>::iterator it = l1.begin(); it != l1.end(); ++it)
+    {
+        cout << *it << ' ';
+    }
+    cout << endl;
+    for (_list<int>::iterator it = l2.begin(); it != l2.end(); ++it)
+    {
+        cout << *it << ' ';
+    }
+    cout << endl;
+    for (_list<int>::iterator it = l3.begin(); it != l3.end(); ++it)
+    {
+        cout << *it << ' ';
+    }
+}
+
+void test14()
+{
+    _list<int> l;
+    for (int i = 0; i < 100; ++i)
+    {
+        l.push_back(i);
+        assert(l.size() == i + 1);
+        assert(std::distance(l.cbegin(), l.cend()) == i + 1);
+    }
+    l.reverse();
+    int i = 99;
+    for (_list<int>::iterator it = l.begin(); it != l.end(); ++it)
+    {
+        assert(i-- == *it);
     }
 }
