@@ -3,6 +3,9 @@
 #include <functional>
 #include <utility>
 #include <queue>
+#include <initializer_list>
+#include <assert.h>
+#include <deque>
 
 #define debug_mode
 
@@ -71,7 +74,7 @@ private:
         color c;
         node* parent, * left, * right;
 
-        node(const value_type& entry_, color c_ = color::RED, node* parent_ = nullptr, node* left_ = nullptr, node* right_ = nullptr) : entry(entry_), c(c_), parent(parent_),
+        node(const value_type& entry_, color c_ = color::RED, node* parent_ = nullptr, node* left_ = nil, node* right_ = nil) : entry(entry_), c(c_), parent(parent_),
             left(left_), right(right_) {}
     };
 
@@ -310,11 +313,72 @@ private:
         if (b != nil)
             b->parent = a->parent;
     }
+
+#ifdef debug_mode
+    bool validate_btree(node* p)
+    {
+        if (p == nil)
+            return true;
+
+        key_type max_k = numeric_limits<key_type>::min();
+        key_type min_k = numeric_limits<key_type>::max();
+
+        preorder_traversal(p->left, [this, &max_k, &min_k](node* x) { if (cmp(x->entry.first, min_k)) min_k = x->entry.first; if (!cmp(x->entry.first, max_k)) max_k = x->entry.first; });
+
+        if (!cmp(max_k, p->entry.first))
+        {
+            return false;
+        }
+
+        max_k = numeric_limits<key_type>::min();
+        min_k = numeric_limits<key_type>::max();
+
+        preorder_traversal(p->right, [this, &max_k, &min_k](node* x) { if (cmp(x->entry.first, min_k)) min_k = x->entry.first; if (!cmp(x->entry.first, max_k)) max_k = x->entry.first; });
+
+        if (cmp(min_k, p->entry.first))
+        {
+            return false;
+        }
+
+        return validate_btree(p->right) && validate_btree(p->right);
+    }
+
+    vector<pair<node*, bool>> bad_bst_examples()
+    {
+        /*
+        *		    2		true
+        *		   / \
+        *		  1	  3
+        */
+
+        /*		    5		false
+        *		   / \
+        *		  1   4
+        *			 / \
+        *			3   6
+        */
+
+        /*			5		false
+        *		   / \
+        *		  4   6
+        *			 / \
+        *           3   7
+        */
+
+        // no need to use parent nodes
+        node* ex1 = new node({ 2, 2 }, color::BLACK, nullptr, new node({ 1, 1 }, color::BLACK), new node({ 3, 3 }, color::BLACK));
+        node* ex2 = new node({ 5, 5 }, color::BLACK, nullptr, new node({ 1, 1 }, color::BLACK), new node({ 4, 4 }, color::BLACK, nullptr, new node({ 3, 3 }, color::BLACK), new node({ 6, 6 }, color::BLACK)));
+        node* ex3 = new node({ 5, 5 }, color::BLACK, nullptr, new node({ 4, 4 }, color::BLACK, nullptr, new node({ 6, 6 }, color::BLACK, nullptr, new node({ 3, 3 }, color::BLACK, nullptr, new node({ 7,7 }, color::BLACK)))));
+
+        vector<pair<node*, bool>> r = { {ex1, true}, {ex2, false}, {ex3, false} };
+        return r;
+    }
+#endif 
 public:
     rbtree_map(Compare cmp_ = Compare()) : root(nullptr), cmp(cmp_), sz(0) {}
 
-    rbtree_map(const rbtree_map& other) : root(nullptr), cmp(other.cmp), sz(other.sz) {
-        if (sz == 0)
+    rbtree_map(const rbtree_map& other) : root(nullptr), cmp(other.cmp), sz(0) {
+        if (other.sz == 0)
             return;
         // 
         // BS Tree -> red black BS Tree -> std::map
@@ -325,15 +389,35 @@ public:
         //   inorder_traversal(other.root, [this](node* p){this->operator[](p->entry.first) = p->entry.second;});
     }
 
-    rbtree_map(rbtree_map&& other) noexcept {}
+    template <typename Comp>
+    rbtree_map(std::initializer_list<value_type> init, const Comp& comp = Compare()) : cmp(comp), sz(0)
+    {
+        for (const value_type& v : init)
+        {
+            this->operator[](v.first) = v.second;
+        }
+    }
 
-    rbtree_map& operator=(const rbtree_map& other) {}
 
-    rbtree_map& operator=(rbtree_map&& other) noexcept {}
+    rbtree_map(rbtree_map&& other) noexcept
+    {
+        // TODO
+    }
+
+    rbtree_map& operator=(const rbtree_map& other)
+    {
+        // TODO
+    }
+
+    rbtree_map& operator=(rbtree_map&& other) noexcept
+    {
+        // TODO
+    }
 
     ~rbtree_map() noexcept
     {
-        postorder_traversal(root, [](node* p) { delete p; });
+        if (root)
+            postorder_traversal(root, [](node* p) { delete p; });
     }
 
     reference operator[](const key_type& key)
@@ -368,7 +452,7 @@ public:
         return p->entry.second;
     }
 
-    class iterator : public  std::iterator<std::bidirectional_iterator_tag, value_type>{
+    class iterator : public  std::iterator<std::bidirectional_iterator_tag, value_type> {
         node* it;
 
         node* successor(node* p)
@@ -415,7 +499,7 @@ public:
             return *this;
         }
         bool operator==(iterator other) const {
-            return it != other.it;
+            return it == other.it;
         }
 
         bool operator!=(iterator other) const {
@@ -438,9 +522,29 @@ public:
         return nullptr;
     }
 
+    iterator find_recursive(node* p, const key_type& k)
+    {
+        if (p == nullptr || (!cmp(p->entry.first, k) && !cmp(k, p->entry.first)))
+        {
+            return p;
+        }
+
+        if (cmp(k, p->entry.first))
+            return find_recursive(p->left, k);
+        else
+            return find_recursive(p->right, k);
+    }
+
+    iterator find(const key_type& k)
+    {
+        return find_recursive(root, k);
+    }
+
     void erase(iterator it)
     {
         node* z = (node*)it;
+        if (z == nullptr || z == nil)
+            return;
         // transplant
         if (z->left == nil)
             transplant(z, z->right);
@@ -490,7 +594,36 @@ public:
         delete z;
     }
 
+    size_type size() const
+    {
+        return sz;
+    }
+
+    iterator kth_element(size_type k)
+    {
+        size_type i = 1;
+        iterator it(nullptr);
+        kth_element(root, k, i, it);
+        return it;
+    }
+
 #ifdef debug_mode
+
+    void kth_element(node* r, size_type k, size_type& i, iterator& it)
+    {
+        if (r == nil)
+        {
+            return;
+        }
+
+        kth_element(r->left, k, i, it);
+        if (k == i)
+            it = r;
+
+        ++i;
+        kth_element(r->right, k, i, it);
+    }
+
     void print_inorder()
     {
         inorder_traversal(root, [](node* it) {cout << it->entry.first << ' ' << it->entry.second << '\n'; });
@@ -508,8 +641,169 @@ public:
         cout << endl;
     }
 
-#endif 
+    bool is_valid_bst()
+    {
+        return validate_btree(root);
+    }
+
+    void check_is_valid_bst()
+    {
+        vector<pair<node*, bool>> v = bad_bst_examples();
+
+        for (pair<node*, bool> p : v)
+        {
+            bool b = validate_btree(p.first);
+            assert(b == p.second);
+        }
+    }
+
+    pair<vector<node*>, vector<vector<vector<value_type>>>> zigzag_traversal_examples() const
+    {
+        /*
+        
+        1.    
+            3                     {{3}, {20,9}, {15,4}}
+           / \
+          9   20
+             /  \
+            15   4
+
+        2.
+            1                     {{{1}}}
+
+        3.
+            1                     {{1}, {3,2}, {4,5}}
+           / \ 
+          2   3
+         /     \
+        4       5
+
+        */
+        node* r1 = new node({ 3, 5 }, color::BLACK, nullptr, new node({ 9, 14 }, color::BLACK), new node({ 20, 7 }, color::BLACK, nullptr, new node({ 15, 4 }, color::BLACK), new node({ 7,5 }, color::BLACK)));
+        vector<vector<value_type>> v1 = {{ {3,5} }, { {20,7}, {9,14} }, { {15,4}, {7,5} }};
+
+        node* r2 = new node({ 1, 4 }, color::BLACK);
+        vector<vector<value_type>> v2 = { {{1, 4}} };
+
+        node* r3 = new node({ 1, 1 }, color::BLACK, nullptr, new node({ 2, 4 }, color::BLACK, nullptr, new node({ 4, 4 }, color::BLACK), nil), new node({ 3, 3 }, color::BLACK, nullptr, nil, new node({ 5,14 }, color::BLACK)));
+        vector<vector<value_type>> v3 = { {{1,1}}, {{3,3}, {2,4}}, {{4,4}, {5,14}} };
+
+     //   pair<vector<node*>, vector<vector<vector<value_type>>>> p { {r1, r2, r3}, { v1, v2, v3 }};
+ 
+        return { {r1, r2, r3}, { v1, v2, v3 } };
+    }
+
+    void bfs(queue<pair<node*, int>>& q, vector<deque<value_type>>& r) 
+    {
+        if (q.empty())
+        {
+            return;
+        }
+
+        pair<node*, int> t = q.front();
+        q.pop();
+
+        if (r.size() < t.second)
+        {
+            r.push_back({ t.first->entry });
+        }
+        else
+        {
+            if (t.second % 2 == 0)
+            {
+             //   const value_type vv;
+              //  r[t.second - 1].insert(r[t.second - 1].begin(), 5);
+             //   r[t.second - 1].insert(r[t.second - 1].begin(), t.first->entry);
+                r[t.second - 1].push_front(t.first->entry);
+            }
+            else
+            {
+                r[t.second - 1].push_back(t.first->entry);
+            }
+        }
+
+        if (t.first->left != nil)
+        {
+            q.push({ t.first->left, t.second + 1 });
+        }
+        if (t.first->right != nil)
+        {
+            q.push({ t.first->right, t.second + 1 });
+        }
+
+
+        return bfs(q, r);
+    }
+
+    vector<vector<value_type>> zigzag_traversal(node* p)
+    {
+        vector<deque<value_type>> r1;
+
+        queue<pair<node*, int>> q;
+
+        q.push({ p,1 });
+
+        bfs(q, r1);
+
+        vector<vector<value_type>> r;
+
+        for (auto& vv : r1)
+        {
+            vector<value_type> vt;
+            for (auto& a : vv)
+                vt.push_back(a);
+            r.push_back(vt);
+        }
+        return r;
+    }
+
+    void check_zigzag_traversal()
+    {
+        pair<vector<node*>, vector<vector<vector<value_type>>>> v = zigzag_traversal_examples();
+
+        for (int i = 0; i < v.second.size(); ++i)
+        {
+            vector<vector<value_type>> out = zigzag_traversal(v.first[i]);
+            assert(out == v.second[i]);
+        }
+    }
+#endif
+
 };
 
 template<typename K, typename T, typename C>
 typename rbtree_map<K, T, C>::node* rbtree_map<K, T, C>::nil = new node(value_type(), color::BLACK, nullptr, nullptr, nullptr);
+
+class unique_BSTs {
+    vector<int> v;
+    int num_trees(int n)
+    {
+        if (n == 0 || n == 1)
+        {
+            return 1;
+        }
+
+        if (v[n - 1] != -1)
+        {
+            return v[n - 1];
+        }
+
+        int s = 0;
+        for (int i = 1; i <= n; ++i)
+        {
+            s += num_trees(i - 1) * num_trees(n - i);
+        }
+        v[n - 1] = s;
+
+        return s;
+    }
+
+public:
+    int num_of_unique_bsts(int n) {
+
+        v = vector<int>(n, -1);
+        int k = num_trees(n);
+
+        return k;
+    }
+};
