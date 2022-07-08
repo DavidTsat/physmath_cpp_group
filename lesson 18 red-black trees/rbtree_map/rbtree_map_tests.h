@@ -192,3 +192,9 @@ void test10()
     rbtree_map<int, int> m;
     m.check_zigzag_traversal();
 }
+
+void test11()
+{
+    rbtree_map<int, int> m;
+    m.check_if_balanced();
+}

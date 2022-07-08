@@ -317,30 +317,7 @@ private:
 #ifdef debug_mode
     bool validate_btree(node* p)
     {
-        if (p == nil)
-            return true;
-
-        key_type max_k = numeric_limits<key_type>::min();
-        key_type min_k = numeric_limits<key_type>::max();
-
-        preorder_traversal(p->left, [this, &max_k, &min_k](node* x) { if (cmp(x->entry.first, min_k)) min_k = x->entry.first; if (!cmp(x->entry.first, max_k)) max_k = x->entry.first; });
-
-        if (!cmp(max_k, p->entry.first))
-        {
-            return false;
-        }
-
-        max_k = numeric_limits<key_type>::min();
-        min_k = numeric_limits<key_type>::max();
-
-        preorder_traversal(p->right, [this, &max_k, &min_k](node* x) { if (cmp(x->entry.first, min_k)) min_k = x->entry.first; if (!cmp(x->entry.first, max_k)) max_k = x->entry.first; });
-
-        if (cmp(min_k, p->entry.first))
-        {
-            return false;
-        }
-
-        return validate_btree(p->right) && validate_btree(p->right);
+        // TODO
     }
 
     vector<pair<node*, bool>> bad_bst_examples()
@@ -373,6 +350,50 @@ private:
         vector<pair<node*, bool>> r = { {ex1, true}, {ex2, false}, {ex3, false} };
         return r;
     }
+
+    pair<vector<node*>, vector<vector<vector<value_type>>>> zigzag_traversal_examples() const
+    {
+        /*
+
+        1.
+            3                     {{3}, {20,9}, {15,4}}
+           / \
+          9   20
+             /  \
+            15   4
+
+        2.
+            1                     {{{1}}}
+
+        3.
+            1                     {{1}, {3,2}, {4,5}}
+           / \
+          2   3
+         /     \
+        4       5
+
+        */
+        node* r1 = new node({ 3, 5 }, color::BLACK, nullptr, new node({ 9, 14 }, color::BLACK), new node({ 20, 7 }, color::BLACK, nullptr, new node({ 15, 4 }, color::BLACK), new node({ 7,5 }, color::BLACK)));
+        vector<vector<value_type>> v1 = { { {3,5} }, { {20,7}, {9,14} }, { {15,4}, {7,5} } };
+
+        node* r2 = new node({ 1, 4 }, color::BLACK);
+        vector<vector<value_type>> v2 = { {{1, 4}} };
+
+        node* r3 = new node({ 1, 1 }, color::BLACK, nullptr, new node({ 2, 4 }, color::BLACK, nullptr, new node({ 4, 4 }, color::BLACK), nil), new node({ 3, 3 }, color::BLACK, nullptr, nil, new node({ 5,14 }, color::BLACK)));
+        vector<vector<value_type>> v3 = { {{1,1}}, {{3,3}, {2,4}}, {{4,4}, {5,14}} };
+
+        return { {r1, r2, r3}, { v1, v2, v3 } };
+    }
+
+    vector<vector<value_type>> zigzag_traversal(node* p) const
+    {
+        // TODO
+    }
+
+    bool is_balanced(const node* p) const
+    {
+        // TODO
+    }
 #endif 
 public:
     rbtree_map(Compare cmp_ = Compare()) : root(nullptr), cmp(cmp_), sz(0) {}
@@ -390,14 +411,10 @@ public:
     }
 
     template <typename Comp>
-    rbtree_map(std::initializer_list<value_type> init, const Comp& comp = Compare()) : cmp(comp), sz(0)
+    rbtree_map(std::initializer_list<value_type> init, const Comp& comp = Compare()) : // TODO
     {
-        for (const value_type& v : init)
-        {
-            this->operator[](v.first) = v.second;
-        }
+        // TODO
     }
-
 
     rbtree_map(rbtree_map&& other) noexcept
     {
@@ -524,15 +541,7 @@ public:
 
     iterator find_recursive(node* p, const key_type& k)
     {
-        if (p == nullptr || (!cmp(p->entry.first, k) && !cmp(k, p->entry.first)))
-        {
-            return p;
-        }
-
-        if (cmp(k, p->entry.first))
-            return find_recursive(p->left, k);
-        else
-            return find_recursive(p->right, k);
+        // TODO
     }
 
     iterator find(const key_type& k)
@@ -555,7 +564,8 @@ public:
             node* y = get_min(z->right);
             if (y == z->right)
             {
-                /*    q
+                /*   
+                      q
                       |
                       z
                     /   \
@@ -601,28 +611,10 @@ public:
 
     iterator kth_element(size_type k)
     {
-        size_type i = 1;
-        iterator it(nullptr);
-        kth_element(root, k, i, it);
-        return it;
+        // TODO
     }
 
 #ifdef debug_mode
-
-    void kth_element(node* r, size_type k, size_type& i, iterator& it)
-    {
-        if (r == nil)
-        {
-            return;
-        }
-
-        kth_element(r->left, k, i, it);
-        if (k == i)
-            it = r;
-
-        ++i;
-        kth_element(r->right, k, i, it);
-    }
 
     void print_inorder()
     {
@@ -657,107 +649,7 @@ public:
         }
     }
 
-    pair<vector<node*>, vector<vector<vector<value_type>>>> zigzag_traversal_examples() const
-    {
-        /*
-        
-        1.    
-            3                     {{3}, {20,9}, {15,4}}
-           / \
-          9   20
-             /  \
-            15   4
-
-        2.
-            1                     {{{1}}}
-
-        3.
-            1                     {{1}, {3,2}, {4,5}}
-           / \ 
-          2   3
-         /     \
-        4       5
-
-        */
-        node* r1 = new node({ 3, 5 }, color::BLACK, nullptr, new node({ 9, 14 }, color::BLACK), new node({ 20, 7 }, color::BLACK, nullptr, new node({ 15, 4 }, color::BLACK), new node({ 7,5 }, color::BLACK)));
-        vector<vector<value_type>> v1 = {{ {3,5} }, { {20,7}, {9,14} }, { {15,4}, {7,5} }};
-
-        node* r2 = new node({ 1, 4 }, color::BLACK);
-        vector<vector<value_type>> v2 = { {{1, 4}} };
-
-        node* r3 = new node({ 1, 1 }, color::BLACK, nullptr, new node({ 2, 4 }, color::BLACK, nullptr, new node({ 4, 4 }, color::BLACK), nil), new node({ 3, 3 }, color::BLACK, nullptr, nil, new node({ 5,14 }, color::BLACK)));
-        vector<vector<value_type>> v3 = { {{1,1}}, {{3,3}, {2,4}}, {{4,4}, {5,14}} };
-
-     //   pair<vector<node*>, vector<vector<vector<value_type>>>> p { {r1, r2, r3}, { v1, v2, v3 }};
- 
-        return { {r1, r2, r3}, { v1, v2, v3 } };
-    }
-
-    void bfs(queue<pair<node*, int>>& q, vector<deque<value_type>>& r) 
-    {
-        if (q.empty())
-        {
-            return;
-        }
-
-        pair<node*, int> t = q.front();
-        q.pop();
-
-        if (r.size() < t.second)
-        {
-            r.push_back({ t.first->entry });
-        }
-        else
-        {
-            if (t.second % 2 == 0)
-            {
-             //   const value_type vv;
-              //  r[t.second - 1].insert(r[t.second - 1].begin(), 5);
-             //   r[t.second - 1].insert(r[t.second - 1].begin(), t.first->entry);
-                r[t.second - 1].push_front(t.first->entry);
-            }
-            else
-            {
-                r[t.second - 1].push_back(t.first->entry);
-            }
-        }
-
-        if (t.first->left != nil)
-        {
-            q.push({ t.first->left, t.second + 1 });
-        }
-        if (t.first->right != nil)
-        {
-            q.push({ t.first->right, t.second + 1 });
-        }
-
-
-        return bfs(q, r);
-    }
-
-    vector<vector<value_type>> zigzag_traversal(node* p)
-    {
-        vector<deque<value_type>> r1;
-
-        queue<pair<node*, int>> q;
-
-        q.push({ p,1 });
-
-        bfs(q, r1);
-
-        vector<vector<value_type>> r;
-
-        for (auto& vv : r1)
-        {
-            vector<value_type> vt;
-            for (auto& a : vv)
-                vt.push_back(a);
-            r.push_back(vt);
-        }
-        return r;
-    }
-
-    void check_zigzag_traversal()
+    void check_zigzag_traversal() const 
     {
         pair<vector<node*>, vector<vector<vector<value_type>>>> v = zigzag_traversal_examples();
 
@@ -767,6 +659,54 @@ public:
             assert(out == v.second[i]);
         }
     }
+
+    void check_if_balanced() const
+    {
+        /*
+        *               10          true
+        *              / \
+        *             2  20
+        *               /  \
+        *              15   70
+        */
+        
+        /*              10          false
+        *              / \
+        *             8   30
+        *            / \
+        *           4   9
+        *          / \
+        *         3   7
+        */
+
+        node* r1 = new node({ 10,3 }, color::BLACK, nullptr, new node({ 2,9 }, color::BLACK), new node({ 20,20 }, color::BLACK, new node({ 15,15 }, color::BLACK), new node({ 70,7 }, color::BLACK)));
+        node* r2 = new node({ 10,1 }, color::BLACK, nullptr, new node({ 8,2 }, color::BLACK, nullptr, new node({ 4,3 }, color::BLACK, nullptr, new node({ 3,4 }, color::BLACK), new node({7,4}, color::BLACK)), new node({ 9,3 }, color::BLACK)), new node({ 30,2 }, color::BLACK));
+        
+        vector<node*> v = { r1, r2 };
+        vector<bool> answers = { true, false };
+
+        for (int i = 0; i < v.size(); ++i)
+        {
+            bool b = is_balanced(v[i]);
+            assert(b == answers[i]);
+        }
+
+        rbtree_map<int, int> m;
+        m[10] = 0;
+        m[54] = 1;
+        m[0] = 2;
+        m[3] = 3;
+        m[41] = 4;
+        m[78] = 5;
+        m[6] = 6;
+        m[777] = 7;
+        m[852] = 8;
+        m[90] = 9;
+
+        bool b = m.is_balanced(m.root);
+        assert(b == true);
+    }
+
 #endif
 
 };
@@ -775,35 +715,10 @@ template<typename K, typename T, typename C>
 typename rbtree_map<K, T, C>::node* rbtree_map<K, T, C>::nil = new node(value_type(), color::BLACK, nullptr, nullptr, nullptr);
 
 class unique_BSTs {
-    vector<int> v;
-    int num_trees(int n)
-    {
-        if (n == 0 || n == 1)
-        {
-            return 1;
-        }
-
-        if (v[n - 1] != -1)
-        {
-            return v[n - 1];
-        }
-
-        int s = 0;
-        for (int i = 1; i <= n; ++i)
-        {
-            s += num_trees(i - 1) * num_trees(n - i);
-        }
-        v[n - 1] = s;
-
-        return s;
-    }
-
+ 
 public:
     int num_of_unique_bsts(int n) {
 
-        v = vector<int>(n, -1);
-        int k = num_trees(n);
-
-        return k;
+        // TODO
     }
 };
