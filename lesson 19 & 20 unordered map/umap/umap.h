@@ -63,7 +63,7 @@ private:
     size_type m; //bucket_count
     hasher h;
     key_equal ke;
-    float max_load_factor = 2.;
+    float max_load_factor_ = 2.;
 
 public:
     class iterator : public std::iterator<bidirectional_iterator_tag, value_type> {
